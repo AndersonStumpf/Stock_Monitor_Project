@@ -11,6 +11,9 @@ dash = "^2.18.2"
 dash-bootstrap-components = "^1.6.0"
 pandas = "^2.2.3"
 numpy = "^2.2.1"
+websocket = "^0.2.1"
+websocket-client = "^1.8.0"
+datetime = "^5.5"
 
 
 [build-system]
