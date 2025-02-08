@@ -23,18 +23,18 @@ body{
 
 /*Estilização do header*/
 .header_icon{
-    background-color : transparent;
-    border-color : transparent;
-    color : rgba(255, 255, 255, 0.6);
+    background-color : transparent !important;
+    border-color : transparent !important;
+    color : rgba(255, 255, 255, 0.6) !important;
     font-size: 16px;
     padding: 0;
     font-family: Nexa;
 }
 .header_icon:hover{
-    transition: 0.4s ease-out;
-    color: white ;
-    background-color: transparent;
-    border-color: transparent;
+    transition: 0.4s ease-out !important;
+    color: white !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
 }
 
 /*Estilização dos cards da fixed_row*/
@@ -253,3 +253,25 @@ h5 {
     transition: 0.2s ease-out;
     color: white ;
 }
+
+/*###########################################################*/
+.btn{
+    background-color: rgba(178, 45, 178, 1);
+    border-color : rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn:hover{
+    background-color: rgba(178, 45, 178, 0.8);
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+.card_chatgpt_user{
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+.card_chatgpt_gpt{
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+/*###########################################################*/

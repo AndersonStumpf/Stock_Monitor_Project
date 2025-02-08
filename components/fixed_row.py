@@ -112,10 +112,25 @@ layout = dbc.Container([
 def radar_graph(book_data, switch):
     df_registros = pd.DataFrame(book_data)
     df_registros['vol'] = abs(df_registros['vol']) * df_registros['tipo'].replace({'Compra': 1, 'Venda': -1})
+
+    #####################################################################################################################################
+    try:
+        df_sectors = pd.read_csv('sectors.csv', index_col=0)
+
+    except:
+        df_sectors = pd.DataFrame(columns=['setor', 'ativo', 'participacao %'])
+    
+    df_sectors.to_csv('sectors.csv')
+    #####################################################################################################################################
     
     if switch:
         df_ibov_prop = df_ibov[df_ibov['Código'].isin(df_registros['ativo'].unique())]
         df_ibov_prop['Proporcao'] = df_ibov_prop['Participação'].apply(lambda x: x*100/df_ibov_prop['Participação'].sum())
+
+        #####################################################################################################################################
+        df_sectors = df_ibov_prop.drop(['Ação', 'Tipo', 'Qtde. Teórica', 'Part. (%)Acum.', 'Participação', 'Proporcao'],  axis=1)
+        df_sectors.to_csv('sectors.csv')
+        #####################################################################################################################################
 
         ibov_setor = df_ibov_prop.groupby('Setor')['Proporcao'].sum()
 
@@ -172,7 +187,7 @@ def update_cards_ativos(historical_data, period, dropdown, book_data):
     df_book = pd.DataFrame(book_data)
     df_hist = pd.DataFrame(historical_data)
 
-    df_book['datetime'] = pd.to_datetime(df_book['date'].str.replace('T', ' '), format='%Y-%m-%d %H:%M:%S')
+    df_book['datetime'] = pd.to_datetime(df_book['date'], format='%Y-%m-%d %H:%M:%S')
 
     df2 = df_book.groupby(by=['ativo', 'tipo'])['vol'].sum()
 
@@ -204,7 +219,7 @@ def update_cards_ativos(historical_data, period, dropdown, book_data):
 
     for key, value in ativos_existentes.items():
         df_auxiliar = (df_hist[df_hist.symbol.str.contains(key)])
-        df_auxiliar['datetime'] = pd.to_datetime(df_auxiliar['datetime'].str.replace('T', ' '), format='%Y-%m-%d %H:%M:%S')
+        df_auxiliar['datetime'] = pd.to_datetime(df_auxiliar['datetime'], format='%Y-%m-%d %H:%M:%S')
         df_periodo = df_auxiliar[df_auxiliar['datetime'] > correct_timedelta]
         # import pdb; pdb.set_trace()
         valor_atual = df_periodo['close'].iloc[-1]
@@ -230,7 +245,7 @@ def update_cards_ativos(historical_data, period, dropdown, book_data):
 
     #Graficos
     df_hist = pd.DataFrame(historical_data)
-    df_hist['datetime'] = pd.to_datetime(df_hist['datetime'].str.replace('T', ' '), format='%Y-%m-%d %H:%M:%S')
+    df_hist['datetime'] = pd.to_datetime(df_hist['datetime'], format='%Y-%m-%d %H:%M:%S')
     df_hist = slice_df_timedeltas(df_hist, period)
 
     df_hist = df_hist[df_hist['symbol'].str.contains('|'.join(lista_tags))]
@@ -291,7 +306,7 @@ def update_cards_ativos(historical_data, period, dropdown, book_data):
     
     compra_e_venda = df_book.groupby('tipo')
 
-    df_compra_e_venda = compra_e_venda.sum(numeric_only=True)
+    df_compra_e_venda = compra_e_venda.sum()
     if 'Venda' in compra_e_venda.groups and 'Compra' in compra_e_venda.groups:
         valor_carteira_original = df_compra_e_venda['valor_total']['Compra'] - df_compra_e_venda['valor_total']['Venda']
     elif  'Venda' in compra_e_venda.groups and 'Compra' not in compra_e_venda.groups:
@@ -302,7 +317,7 @@ def update_cards_ativos(historical_data, period, dropdown, book_data):
         valor_carteira_original = "0.00"
    
     df_tipo_e_ativo = df_book.groupby(['tipo', 'ativo'])
-    df_tipo_e_ativo_soma = df_tipo_e_ativo.sum(numeric_only=True)
+    df_tipo_e_ativo_soma = df_tipo_e_ativo.sum()
 
     #verificando a quantidade de cada ativo que existe comprada na wallet
     lista_ativos = df_book['ativo'].unique()
